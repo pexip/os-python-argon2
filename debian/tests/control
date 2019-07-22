@@ -1,0 +1,5 @@
+Test-Command: for p in $(py3versions -s) ; do $p -m pytest; done
+Depends: @, @builddeps@
+
+Test-Command: for p in $(py3versions -s) ; do $p -m argon2 -n 1 -t 1 -m 8 -p 1; done
+Depends: @, python3-all

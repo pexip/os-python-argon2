@@ -1,0 +1,31 @@
+python-argon2 (18.3.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * Use debhelper-compat instead of debian/compat.
+  * Drop PyPy support
+  * Drop Python 2 support
+  * Bump standards version to 4.4.0
+  * Bump debhelper compat level to 12
+  * Enable PIE
+
+ -- Ondřej Nový <onovy@debian.org>  Mon, 22 Jul 2019 21:57:19 +0200
+
+python-argon2 (18.3.0-1) unstable; urgency=medium
+
+  * New upstream release 18.3.0
+  * Stop exporting HYPOTHESIS_DATABASE_FILE, now handled by pybuild
+  * Don't install cffi bindings in multiple python3 versioned dirs
+  * Review debian/copyright for missing attributions (Closes: #909512)
+  * Update Standards-Version to 4.2.1 (no further changes)
+  * Set Rules-Requires-Root: no
+  * Set Vcs-Git to a redirect-less URI
+
+ -- Nicolas Dandrimont <olasd@debian.org>  Wed, 07 Nov 2018 21:18:00 +0100
+
+python-argon2 (18.1.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #864156).
+    - Provide the python-argon2 binary package to allow usage of the
+      algorithm by existing Python2 packages such as python-passlib.
+
+ -- Nicolas Dandrimont <olasd@debian.org>  Wed, 18 Apr 2018 16:11:34 +0200

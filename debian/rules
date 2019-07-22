@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+export ARGON2_CFFI_USE_SYSTEM = 1
+
+%:
+	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf $(CURDIR)/debian/hypothesis
+
+override_dh_auto_build:
+	dh_auto_build
+ifeq (,$(filter nodoc,$(DEB_BUILD_OPTIONS)))
+	PYTHONPATH=`pybuild --print build_dir --interpreter python3` $(MAKE) -C docs html
+endif
+
+override_dh_python3:
+	dh_python3
+	# Remove extra cffi bindings, identical to the default version
+	rm -rf debian/python3-argon2/usr/lib/python3.?

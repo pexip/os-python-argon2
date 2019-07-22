@@ -1,0 +1,61 @@
+Source: python-argon2
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Uploaders: Nicolas Dandrimont <olasd@debian.org>
+Section: python
+Priority: optional
+Build-Depends: debhelper-compat (= 12),
+               dh-python (>= 3.20180927~),
+               libargon2-0-dev,
+               python3-all-dev,
+               python3-cffi,
+               python3-hypothesis,
+               python3-pytest,
+               python3-setuptools,
+               python3-six,
+               python3-sphinx
+Standards-Version: 4.4.0
+Rules-Requires-Root: no
+Homepage: https://argon2-cffi.readthedocs.io/
+Vcs-Git: https://salsa.debian.org/python-team/modules/python-argon2.git
+Vcs-Browser: https://salsa.debian.org/python-team/modules/python-argon2
+
+Package: python3-argon2
+Architecture: any
+Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
+Suggests: python-argon2-doc (= ${source:Version})
+Description: Argon2 password hashing library - Python 3.x Module
+ Argon2 is a password-hashing function that can be used to hash passwords
+ for credential storage, key derivation, or other applications.
+ .
+ There are two main versions of Argon2: Argon2i and Argon2d.
+ Argon2i is the safest against side-channel attacks, while Argon2d provides
+ the highest resistance against GPU cracking attacks.
+ .
+ Argon2i and Argon2d are parametrized by:
+  * A time cost, which defines the amount of computation realized and
+    therefore the execution time, given in number of iterations
+  * A memory cost, which defines the memory usage, given in kibibytes
+  * A parallelism degree, which defines the number of parallel threads
+ .
+ This module provides argon2 hashing primitives for the Python 3 programming
+ language.
+
+Package: python-argon2-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Description: Argon2 password hashing library - Python Module Documentation
+ Argon2 is a password-hashing function that can be used to hash passwords
+ for credential storage, key derivation, or other applications.
+ .
+ There are two main versions of Argon2: Argon2i and Argon2d.
+ Argon2i is the safest against side-channel attacks, while Argon2d provides
+ the highest resistance against GPU cracking attacks.
+ .
+ Argon2i and Argon2d are parametrized by:
+  * A time cost, which defines the amount of computation realized and
+    therefore the execution time, given in number of iterations
+  * A memory cost, which defines the memory usage, given in kibibytes
+  * A parallelism degree, which defines the number of parallel threads
+ .
+ This module provides the documentation for the argon2 Python modules.
