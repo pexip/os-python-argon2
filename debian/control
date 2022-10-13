@@ -1,23 +1,22 @@
 Source: python-argon2
-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
 Uploaders: Nicolas Dandrimont <olasd@debian.org>
 Section: python
 Priority: optional
-Build-Depends: debhelper-compat (= 12),
-               dh-python (>= 3.20180927~),
-               libargon2-0-dev,
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               libargon2-dev,
                python3-all-dev,
                python3-cffi,
                python3-hypothesis,
                python3-pytest,
                python3-setuptools,
-               python3-six,
                python3-sphinx
-Standards-Version: 4.4.0
+Standards-Version: 4.6.0
 Rules-Requires-Root: no
 Homepage: https://argon2-cffi.readthedocs.io/
-Vcs-Git: https://salsa.debian.org/python-team/modules/python-argon2.git
-Vcs-Browser: https://salsa.debian.org/python-team/modules/python-argon2
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-argon2.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-argon2
 
 Package: python3-argon2
 Architecture: any
@@ -44,6 +43,7 @@ Package: python-argon2-doc
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Multi-Arch: foreign
 Description: Argon2 password hashing library - Python Module Documentation
  Argon2 is a password-hashing function that can be used to hash passwords
  for credential storage, key derivation, or other applications.

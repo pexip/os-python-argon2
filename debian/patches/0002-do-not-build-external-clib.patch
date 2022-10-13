@@ -1,0 +1,16 @@
+Description: Do not try to build external libs when it is specified to use system argon2 lib
+Author: Nilesh Patra <nilesh@debian.org>
+Forwarded: not-needed. Upstream split the package into cffi bindings and a pure python package and
+ also switched their build system to flit. So forwarding is it un-necessary.
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1020022
+Last-Update: 2022-10-13
+--- a/setup.py
++++ b/setup.py
+@@ -193,6 +193,7 @@
+         )
+         if use_system_argon2:
+             disable_subcommand(build, "build_clib")
++            LIBRARIES = []
+         cmdclass = {"build_clib": BuildCLibWithCompilerFlags}
+         if BDistWheel is not None:
+             cmdclass["bdist_wheel"] = BDistWheel

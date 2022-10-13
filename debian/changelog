@@ -1,3 +1,45 @@
+python-argon2 (21.1.0-2) unstable; urgency=medium
+
+  * Team Upload.
+  * Add patch to fix FTBFS (Closes: #1020022)
+    + Do not try to build external lib when using the
+      system lib is specified.
+  * Change B-D to libargon2-dev (Closes: #1005700)
+
+ -- Nilesh Patra <nilesh@debian.org>  Thu, 13 Oct 2022 15:08:36 +0530
+
+python-argon2 (21.1.0-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Ondřej Nový ]
+  * Bump Standards-Version to 4.4.1.
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Refer to specific version of license .
+  * Apply multi-arch hints.
+    + python-argon2-doc: Add Multi-Arch: foreign.
+
+  [ Gordon Ball ]
+  * d/watch: use github as upstream
+  * d/copyright: s/argon2_cffi/argon2-cffi/
+  * d/copyright: drop unused licenses
+  * d/control: debhelper compat 13
+  * d/control: standards-version 4.6.0
+  * d/control: drop old version constraint on dh-python
+  * New upstream version 21.1.0
+  * Patch documentation build to use generic sphinx theme
+  * Drop dependency on python3-six
+  * Drop obsolete copyright block and license for extras/msinttypes
+
+ -- Gordon Ball <gordon@chronitis.net>  Sun, 10 Oct 2021 19:56:17 +0000
+
 python-argon2 (18.3.0-2) unstable; urgency=medium
 
   * Team upload.
