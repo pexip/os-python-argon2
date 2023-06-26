@@ -1,11 +1,9 @@
-from __future__ import absolute_import, division, print_function
-
 import binascii
 import os
 
 import pytest
 
-from hypothesis import assume, given
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from argon2.exceptions import (
@@ -108,7 +106,7 @@ both_hash_funcs = pytest.mark.parametrize(
 )
 
 
-class TestHash(object):
+class TestHash:
     @i_and_d_encoded
     def test_hash_secret(self, type, hash):
         """
@@ -167,7 +165,7 @@ class TestHash(object):
         Passing an argument of wrong type raises TypeError.
         """
         with pytest.raises(TypeError):
-            func(u"oh no, unicode!")
+            func("oh no, unicode!")
 
     @both_hash_funcs
     def test_illegal_argon2_parameter(self, func):
@@ -202,7 +200,7 @@ class TestHash(object):
         )
 
 
-class TestVerify(object):
+class TestVerify:
     @i_and_d_encoded
     def test_success(self, type, hash):
         """
@@ -253,6 +251,7 @@ class TestVerify(object):
     hash_len=st.integers(lib.ARGON2_MIN_OUTLEN, 513),
     salt_len=st.integers(lib.ARGON2_MIN_SALT_LENGTH, 513),
 )
+@settings(deadline=None)
 def test_argument_ranges(
     password, time_cost, parallelism, memory_cost, hash_len, salt_len
 ):
@@ -318,12 +317,15 @@ def test_core():
     rv = core(ctx, Type.D.value)
 
     assert 0 == rv
-    assert hash_secret_raw(
-        pwd,
-        salt=salt,
-        time_cost=1,
-        memory_cost=8,
-        parallelism=1,
-        hash_len=hash_len,
-        type=Type.D,
-    ) == bytes(ffi.buffer(ctx.out, ctx.outlen))
+    assert (
+        hash_secret_raw(
+            pwd,
+            salt=salt,
+            time_cost=1,
+            memory_cost=8,
+            parallelism=1,
+            hash_len=hash_len,
+            type=Type.D,
+        )
+        == bytes(ffi.buffer(ctx.out, ctx.outlen))
+    )

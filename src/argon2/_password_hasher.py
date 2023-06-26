@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import os
 
 from ._utils import Parameters, _check_types, extract_parameters
@@ -23,7 +21,7 @@ def _ensure_bytes(s, encoding):
     return s.encode(encoding)
 
 
-class PasswordHasher(object):
+class PasswordHasher:
     r"""
     High level class to hash passwords with sensible defaults.
 
@@ -52,7 +50,7 @@ class PasswordHasher(object):
     .. versionadded:: 16.0.0
     .. versionchanged:: 18.2.0
        Switch from Argon2i to Argon2id based on the recommendation by the
-       current RFC_ draft.
+       current RFC draft. See also :doc:`parameters`.
     .. versionchanged:: 18.2.0
        Changed default *memory_cost* to 100 MiB and default *parallelism* to 8.
     .. versionchanged:: 18.2.0 ``verify`` now will determine the type of hash.
@@ -60,7 +58,6 @@ class PasswordHasher(object):
 
     .. _salt: https://en.wikipedia.org/wiki/Salt_(cryptography)
     .. _kibibytes: https://en.wikipedia.org/wiki/Binary_prefix#kibi
-    .. _RFC: https://tools.ietf.org/html/draft-irtf-cfrg-argon2-03#section-4
     """
     __slots__ = ["_parameters", "encoding"]
 
@@ -157,7 +154,7 @@ class PasswordHasher(object):
 
             It is assumed that the caller is in full control of the hash.  No
             other parsing than the determination of the hash type is done by
-            ``argon2_cffi``.
+            ``argon2-cffi``.
 
         :param hash: An encoded hash as returned from
             :meth:`PasswordHasher.hash`.
@@ -196,7 +193,7 @@ class PasswordHasher(object):
         """
         Check whether *hash* was created using the instance's parameters.
 
-        Whenever your Argon2 parameters -- or ``argon2_cffi``'s defaults! --
+        Whenever your Argon2 parameters -- or ``argon2-cffi``'s defaults! --
         change, you should rehash your passwords at the next opportunity.  The
         common approach is to do that whenever a user logs in, since that
         should be the only time when you have access to the cleartext

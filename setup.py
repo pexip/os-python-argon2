@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import codecs
 import os
 import platform
@@ -16,12 +14,18 @@ from setuptools.command.install import install
 
 ###############################################################################
 
-NAME = "argon2_cffi"
+NAME = "argon2-cffi"
 PACKAGES = find_packages(where="src")
 
-# Optimized version requires SSE2 extensions.  They have been around since
-# 2001 so we try to compile it on every recent-ish x86.
-optimized = platform.machine() in ("i686", "x86", "x86_64", "AMD64")
+use_sse2 = os.environ.get("ARGON2_CFFI_USE_SSE2", None)
+if use_sse2 == "1":
+    optimized = True
+elif use_sse2 == "0":
+    optimized = False
+else:
+    # Optimized version requires SSE2 extensions.  They have been around since
+    # 2001 so we try to compile it on every recent-ish x86.
+    optimized = platform.machine() in ("i686", "x86", "x86_64", "AMD64")
 
 CFFI_MODULES = ["src/argon2/_ffi_build.py:ffi"]
 lib_base = os.path.join("extras", "libargon2", "src")
@@ -43,17 +47,6 @@ sources = [
 
 # Add vendored integer types headers if necessary.
 windows = "win32" in str(sys.platform).lower()
-if windows:
-    int_base = "extras/msinttypes/"
-    inttypes = int_base + "inttypes"
-    stdint = int_base + "stdint"
-    vi = sys.version_info[0:2]
-    if vi in [(2, 6), (2, 7)]:
-        # VS 2008 needs both.
-        include_dirs += [inttypes, stdint]
-    elif vi in [(3, 3), (3, 4)]:
-        # VS 2010 needs inttypes.h and fails with both.
-        include_dirs += [inttypes]
 
 LIBRARIES = [("argon2", {"include_dirs": include_dirs, "sources": sources})]
 META_PATH = os.path.join("src", "argon2", "__init__.py")
@@ -62,6 +55,10 @@ PROJECT_URLS = {
     "Documentation": "https://argon2-cffi.readthedocs.io/",
     "Bug Tracker": "https://github.com/hynek/argon2-cffi/issues",
     "Source Code": "https://github.com/hynek/argon2-cffi",
+    "Funding": "https://github.com/sponsors/hynek",
+    "Tidelift": "https://tidelift.com/subscription/pkg/pypi-argon2-cffi?"
+    "utm_source=pypi-argon2-cffi&utm_medium=pypi",
+    "Ko-fi": "https://ko-fi.com/the_hynek",
 }
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -72,13 +69,13 @@ CLASSIFIERS = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX",
     "Operating System :: Unix",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python",
@@ -87,20 +84,12 @@ CLASSIFIERS = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+PYTHON_REQUIRES = ">=3.5"
 SETUP_REQUIRES = ["cffi"]
-if windows and sys.version_info[0] == 2:
-    # required for "Microsoft Visual C++ Compiler for Python 2.7"
-    # https://www.microsoft.com/en-us/download/details.aspx?id=44266
-    SETUP_REQUIRES.append("setuptools>=6.0")
-
-INSTALL_REQUIRES = ["cffi>=1.0.0", "six"]
-# We're not building an universal wheel so this works.
-if sys.version_info[0:2] < (3, 4):
-    INSTALL_REQUIRES += ["enum34"]
-
+INSTALL_REQUIRES = ["cffi>=1.0.0"]
 EXTRAS_REQUIRE = {
-    "docs": ["sphinx"],
-    "tests": ["coverage", "hypothesis", "pytest"],
+    "docs": ["sphinx", "furo"],
+    "tests": ["coverage[toml]>=5.0.2", "hypothesis", "pytest"],
 }
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["docs"] + ["wheel", "pre-commit"]
@@ -204,11 +193,14 @@ def keywords_with_side_effects(argv):
         )
         if use_system_argon2:
             disable_subcommand(build, "build_clib")
+        cmdclass = {"build_clib": BuildCLibWithCompilerFlags}
+        if BDistWheel is not None:
+            cmdclass["bdist_wheel"] = BDistWheel
         return {
             "setup_requires": SETUP_REQUIRES,
             "cffi_modules": CFFI_MODULES,
             "libraries": LIBRARIES,
-            "cmdclass": {"build_clib": BuildCLibWithCompilerFlags},
+            "cmdclass": cmdclass,
         }
 
 
@@ -282,7 +274,7 @@ LONG = (
     + "Release Information\n"
     + "===================\n\n"
     + re.search(
-        r"(\d+.\d.\d \(.*?\)\n.*?)\n\n\n----\n\n\n",
+        r"(\d+.\d.\d \(.*?\)\r?\n.*?)\r?\n\r?\n\r?\n----\r?\n\r?\n\r?\n",
         read("CHANGELOG.rst"),
         re.S,
     ).group(1)
@@ -311,7 +303,7 @@ class BuildCLibWithCompilerFlags(build_clib):
                 )
             sources = list(sources)
 
-            print("building '%s' library" % (lib_name,))
+            print("building '{}' library".format(lib_name))
 
             # First, compile the source code to object files in the library
             # directory.  (This should probably change to putting object
@@ -335,6 +327,23 @@ class BuildCLibWithCompilerFlags(build_clib):
             )
 
 
+if sys.version_info > (3,) and platform.python_implementation() == "CPython":
+    try:
+        import wheel.bdist_wheel
+    except ImportError:
+        BDistWheel = None
+    else:
+
+        class BDistWheel(wheel.bdist_wheel.bdist_wheel):
+            def finalize_options(self):
+                self.py_limited_api = "cp3{}".format(sys.version_info[1])
+                wheel.bdist_wheel.bdist_wheel.finalize_options(self)
+
+
+else:
+    BDistWheel = None
+
+
 if __name__ == "__main__":
     setup(
         name=NAME,
@@ -348,10 +357,12 @@ if __name__ == "__main__":
         maintainer=find_meta("author"),
         maintainer_email=find_meta("email"),
         long_description=LONG,
+        long_description_content_type="text/x-rst",
         keywords=KEYWORDS,
         packages=PACKAGES,
         package_dir={"": "src"},
         classifiers=CLASSIFIERS,
+        python_requires=PYTHON_REQUIRES,
         install_requires=INSTALL_REQUIRES,
         extras_require=EXTRAS_REQUIRE,
         # CFFI

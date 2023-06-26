@@ -1,0 +1,16 @@
+*.dylib
+*.egg-info
+*.pyc
+*.so
+.cache
+.coverage
+.coverage.*
+.eggs
+.hypothesis
+.pytest_cache/
+.tox
+__pycache__
+_build
+dist
+pip-wheel-metadata/
+src/argon2/_ffi.py
