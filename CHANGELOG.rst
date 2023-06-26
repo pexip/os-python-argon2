@@ -5,6 +5,124 @@ Versions are year-based with a strict backward compatibility policy.
 The third digit is only for regressions.
 
 
+21.1.0 (2021-08-29)
+-------------------
+
+Vendoring Argon2 @ `62358ba <https://github.com/P-H-C/phc-winner-argon2/tree/62358ba2123abd17fccf2a108a301d4b52c01a7c>`_ (20190702)
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Microsoft stopped providing the necessary SDKs to ship Python 2.7 wheels and currenly the downloads amount to 0.09%.
+Therefore we have decided that Python 2.7 is not supported anymore.
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+There are indeed no changes whatsoever to the code of *argon2-cffi*.
+The *Argon2* project also hasn't tagged a new release since July 2019.
+There also don't seem to be any important pending fixes.
+
+This release is mainly about improving the way binary wheels are built (abi3 on all platforms).
+
+
+----
+
+
+20.1.0 (2020-05-11)
+-------------------
+
+Vendoring Argon2 @ `62358ba <https://github.com/P-H-C/phc-winner-argon2/tree/62358ba2123abd17fccf2a108a301d4b52c01a7c>`_ (20190702)
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+- It is now possible to manually override the detection of SSE2 using the ``ARGON2_CFFI_USE_SSE2`` environment variable.
+
+
+----
+
+
+19.2.0 (2019-10-27)
+-------------------
+
+Vendoring Argon2 @ `62358ba <https://github.com/P-H-C/phc-winner-argon2/tree/62358ba2123abd17fccf2a108a301d4b52c01a7c>`_ (20190702)
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Python 3.4 is not supported anymore.
+  It has been unsupported by the Python core team for a while now and its PyPI downloads are negligible.
+
+  It's very unlikely that ``argon2-cffi`` will break under 3.4 anytime soon, but we don't test it and don't ship binary wheels for it anymore.
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+- The dependency on ``enum34`` is now protected using a PEP 508 marker.
+  This fixes problems when the sdist is handled by a different interpreter version than the one running it.
+  `#48 <https://github.com/hynek/argon2-cffi/issues/48>`_
+
+
+----
+
+
+19.1.0 (2019-01-17)
+-------------------
+
+Vendoring Argon2 @ `670229c <https://github.com/P-H-C/phc-winner-argon2/tree/670229c849b9fe882583688b74eb7dfdc846f9f6>`_ (20171227)
+
+
+Backward-incompatible changes:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*none*
+
+
+Deprecations:
+^^^^^^^^^^^^^
+
+*none*
+
+
+Changes:
+^^^^^^^^
+
+- Added support for Argon2 v1.2 hashes in ``argon2.extract_parameters()``.
+
+
+----
+
+
 18.3.0 (2018-08-19)
 -------------------
 
@@ -43,17 +161,17 @@ Changes:
 
 - The hash type for ``argon2.PasswordHasher`` is Argon2\ **id** now.
 
-  This decision has been made based on the recommendations in the latest `Argon2 RFC draft <https://tools.ietf.org/html/draft-irtf-cfrg-argon2-03#section-4>`_.
-  `#33 <https://github.com/hynek/argon2_cffi/pull/33>`_
-  `#34 <https://github.com/hynek/argon2_cffi/pull/34>`_
+  This decision has been made based on the recommendations in the latest `Argon2 RFC draft <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-argon2-04#section-4>`_.
+  `#33 <https://github.com/hynek/argon2-cffi/issues/33>`_
+  `#34 <https://github.com/hynek/argon2-cffi/pull/34>`_
 - To make the change of hash type backward compatible, ``argon2.PasswordHasher.verify()`` now determines the type of the hash and verifies it accordingly.
 - Some of the hash parameters have been made stricter to be closer to said recommendations.
   The current goal for a hash verification times is around 50ms.
-  `#41 <https://github.com/hynek/argon2_cffi/pull/41>`_
+  `#41 <https://github.com/hynek/argon2-cffi/pull/41>`_
 - To allow for bespoke decisions about upgrading Argon2 parameters, it's now possible to extract them from a hash via the ``argon2.extract_parameters()`` function.
-  `#41 <https://github.com/hynek/argon2_cffi/pull/41>`_
+  `#41 <https://github.com/hynek/argon2-cffi/pull/41>`_
 - Additionally ``argon2.PasswordHasher`` now has a ``check_needs_rehash()`` method that allows to verify whether a hash has been created with the instance's parameters or whether it should be rehashed.
-  `#41 <https://github.com/hynek/argon2_cffi/pull/41>`_
+  `#41 <https://github.com/hynek/argon2-cffi/pull/41>`_
 
 
 ----
@@ -68,7 +186,7 @@ Vendoring Argon2 @ `670229c <https://github.com/P-H-C/phc-winner-argon2/tree/670
 Changes:
 ^^^^^^^^
 
-- It is now possible to use the ``argon2_cffi`` bindings against an Argon2 library that is provided by the system.
+- It is now possible to use the ``argon2-cffi`` bindings against an Argon2 library that is provided by the system.
 
 
 ----
@@ -83,10 +201,10 @@ Changes:
 ^^^^^^^^
 
 - Prevent side-effects like the installation of ``cffi`` if ``setup.py`` is called with a command that doesn't require it.
-  `#20 <https://github.com/hynek/argon2_cffi/pull/20>`_
+  `#20 <https://github.com/hynek/argon2-cffi/pull/20>`_
 - Fix a bunch of warnings with new ``cffi`` versions and Python 3.6.
-  `#14 <https://github.com/hynek/argon2_cffi/pull/14>`_
-  `#16 <https://github.com/hynek/argon2_cffi/pull/16>`_
+  `#14 <https://github.com/hynek/argon2-cffi/pull/14>`_
+  `#16 <https://github.com/hynek/argon2-cffi/issues/16>`_
 - Add low-level bindings for Argon2id functions.
 
 
@@ -102,7 +220,7 @@ Changes:
 ^^^^^^^^
 
 - Fix compilation on debian jessie.
-  `#13 <https://github.com/hynek/argon2_cffi/pull/13>`_
+  `#13 <https://github.com/hynek/argon2-cffi/pull/13>`_
 
 
 ----
@@ -129,7 +247,7 @@ Changes:
 
 - Add ``VerifyMismatchError`` that is raised if verification fails only because of a password/hash mismatch.
   It's a subclass of ``VerificationError`` therefore this change is completely backward compatible.
-- Add support for `Argon2 1.3 <https://www.ietf.org/mail-archive/web/cfrg/current/msg07948.html>`_.
+- Add support for `Argon2 1.3 <https://mailarchive.ietf.org/arch/msg/cfrg/beOzPh41Hz3cjl5QD7MSRNTi3lA/>`_.
   Old hashes remain functional but opportunistic rehashing is strongly recommended.
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Low-level functions if you want to build your own higher level abstractions.
 
@@ -8,11 +7,8 @@ Low-level functions if you want to build your own higher level abstractions.
     module is full of land mines, dragons, and dinosaurs with laser guns.
 """
 
-from __future__ import absolute_import, division, print_function
 
 from enum import Enum
-
-from six import PY3
 
 from ._ffi import ffi, lib
 from .exceptions import HashingError, VerificationError, VerifyMismatchError
@@ -218,12 +214,12 @@ def core(context, type):
 
     .. warning::
         This is a strictly advanced function working on raw C data structures.
-        Both Argon2's and ``argon2_cffi``'s higher-level bindings do a lot of
+        Both Argon2's and ``argon2-cffi``'s higher-level bindings do a lot of
         sanity checks and housekeeping work that *you* are now responsible for
         (e.g. clearing buffers). The structure of the *context* object can,
         has, and will change with *any* release!
 
-        Use at your own peril; ``argon2_cffi`` does *not* use this binding
+        Use at your own peril; ``argon2-cffi`` does *not* use this binding
         itself.
 
     :param context: A CFFI Argon2 context object (i.e. an ``struct
@@ -251,6 +247,5 @@ def error_to_str(error):
     .. versionadded:: 16.0.0
     """
     msg = ffi.string(lib.argon2_error_message(error))
-    if PY3:
-        msg = msg.decode("ascii")
+    msg = msg.decode("ascii")
     return msg

@@ -1,38 +1,27 @@
-=====================================
-CFFI-based Argon2 Bindings for Python
-=====================================
+=================
+Argon2 for Python
+=================
 
-.. image:: https://img.shields.io/pypi/v/argon2_cffi.svg
-   :target: https://pypi.org/project/argon2_cffi/
-   :alt: PyPI
+.. image:: https://img.shields.io/badge/Docs-Read%20The%20Docs-black
+   :target: https://argon2-cffi.readthedocs.io/
+   :alt: Documentation
 
-.. image:: https://readthedocs.org/projects/argon2-cffi/badge/?version=stable
-   :target: http://argon2-cffi.readthedocs.io/en/stable/?badge=stable
-   :alt: Documentation Status
+.. image:: https://img.shields.io/badge/license-MIT-C06524
+   :target: https://github.com/hynek/argon2-cffi/blob/main/LICENSE
+   :alt: License: MIT
 
-.. image:: https://travis-ci.org/hynek/argon2_cffi.svg?branch=master
-   :target: https://travis-ci.org/hynek/argon2_cffi
-   :alt: Travis CI status
+.. image:: https://img.shields.io/pypi/v/argon2-cffi
+   :target: https://pypi.org/project/argon2-cffi/
+   :alt: PyPI version
 
-.. image:: https://ci.appveyor.com/api/projects/status/3faufu7qgwc8nv2v/branch/master?svg=true
-   :target: https://ci.appveyor.com/project/hynek/argon2-cffi
-   :alt: AppVeyor CI Status
+.. image:: https://static.pepy.tech/personalized-badge/argon2-cffi?period=month&units=international_system&left_color=grey&right_color=blue&left_text=Downloads%20/%20Month
+   :target: https://pepy.tech/project/argon2-cffi
+   :alt: Downloads / Month
 
-.. image:: https://codecov.io/github/hynek/argon2_cffi/branch/master/graph/badge.svg
-   :target: https://codecov.io/github/hynek/argon2_cffi
-   :alt: Test Coverage
-
-.. image:: https://www.irccloud.com/invite-svg?channel=%23cryptography-dev&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
-   :target: https://www.irccloud.com/invite?channel=%23cryptography-dev&amp;hostname=irc.freenode.net&amp;port=6697&amp;ssl=1
-   :alt: IRC
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/ambv/black
-   :alt: Code style: black
 
 .. teaser-begin
 
-`Argon2 <https://github.com/p-h-c/phc-winner-argon2>`_ won the `Password Hashing Competition <https://password-hashing.net/>`_ and ``argon2_cffi`` is the simplest way to use it in Python and PyPy:
+`Argon2 <https://github.com/p-h-c/phc-winner-argon2>`_ won the `Password Hashing Competition <https://www.password-hashing.net/>`_ and *argon2-cffi* is the simplest way to use it in Python and PyPy:
 
 .. code-block:: pycon
 
@@ -51,8 +40,16 @@ CFFI-based Argon2 Bindings for Python
   argon2.exceptions.VerifyMismatchError: The password does not match the supplied hash
 
 
-.. note::
-   `passlib <https://pypi.org/project/passlib/>`_ 1.7.0 and later offers `Argon2 support <https://passlib.readthedocs.io/en/stable/lib/passlib.hash.argon2.html>`_ using this library too.
+*argon2-cffi*'s documentation lives at `Read the Docs <https://argon2-cffi.readthedocs.io/>`_, the code on `GitHub <https://github.com/hynek/argon2-cffi>`_.
+It’s rigorously tested on Python 3.5+, and PyPy3.
 
-``argon2_cffi``\ ’s documentation lives at `Read the Docs <https://argon2-cffi.readthedocs.io/>`_, the code on `GitHub <https://github.com/hynek/argon2_cffi>`_.
-It’s rigorously tested on Python 2.7, 3.4+, and PyPy.
+It implements *Argon2* version 1.3, as described in
+`Argon2: the memory-hard function for password hashing and other applications <https://www.cryptolux.org/images/0/0d/Argon2.pdf>`_.
+
+
+argon2-cffi for Enterprise
+==========================
+
+Available as part of the Tidelift Subscription.
+
+The maintainers of *argon2-cffi* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source packages you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use. `Learn more. <https://tidelift.com/subscription/pkg/pypi-argon2-cffi?utm_source=undefined&utm_medium=referral&utm_campaign=enterprise&utm_term=repo>`_
