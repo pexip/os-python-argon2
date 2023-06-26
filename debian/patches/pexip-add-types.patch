@@ -1,0 +1,428 @@
+From e9f84e4b6db9db514ff4ea91a662cdeed848e630 Mon Sep 17 00:00:00 2001
+From: Hynek Schlawack <hs@ox.cx>
+Date: Wed, 8 Dec 2021 11:32:57 +0100
+Subject: [PATCH] Add Types (#112)
+
+* Add types
+
+* Run 3.7 under coverage for _typing.py
+---
+ src/argon2/__main__.py         |  4 ++-
+ src/argon2/_legacy.py          | 40 ++++++++++++++++--------------
+ src/argon2/_password_hasher.py | 42 ++++++++++++++++++-------------
+ src/argon2/_typing.py          | 13 ++++++++++
+ src/argon2/_utils.py           | 14 ++++-------
+ src/argon2/low_level.py        | 45 +++++++++++++++++-----------------
+ tests/test_legacy.py           |  4 +--
+ tox.ini                        | 21 ++++++++++++++--
+ 10 files changed, 163 insertions(+), 72 deletions(-)
+ create mode 100644 src/argon2/_typing.py
+
+--- a/src/argon2/__main__.py
++++ b/src/argon2/__main__.py
+@@ -11,7 +11,7 @@
+ )
+ 
+ 
+-def main(argv):
++def main(argv: list[str]) -> None:
+     parser = argparse.ArgumentParser(description="Benchmark Argon2.")
+     parser.add_argument(
+         "-n", type=int, default=100, help="Number of iterations to measure."
+diff --git a/src/argon2/_legacy.py b/src/argon2/_legacy.py
+index 12f997e..f62c69b 100644
+--- a/src/argon2/_legacy.py
++++ b/src/argon2/_legacy.py
+@@ -2,9 +2,10 @@
+ Legacy mid-level functions.
+ """
+ 
+-
+ import os
+ 
++from typing import Optional
++
+ from ._password_hasher import (
+     DEFAULT_HASH_LENGTH,
+     DEFAULT_MEMORY_COST,
+@@ -12,18 +13,19 @@
+     DEFAULT_RANDOM_SALT_LENGTH,
+     DEFAULT_TIME_COST,
+ )
++from ._typing import Literal
+ from .low_level import Type, hash_secret, hash_secret_raw, verify_secret
+ 
+ 
+ def hash_password(
+-    password,
+-    salt=None,
+-    time_cost=DEFAULT_TIME_COST,
+-    memory_cost=DEFAULT_MEMORY_COST,
+-    parallelism=DEFAULT_PARALLELISM,
+-    hash_len=DEFAULT_HASH_LENGTH,
+-    type=Type.I,
+-):
++    password: bytes,
++    salt: Optional[bytes] = None,
++    time_cost: int = DEFAULT_TIME_COST,
++    memory_cost: int = DEFAULT_MEMORY_COST,
++    parallelism: int = DEFAULT_PARALLELISM,
++    hash_len: int = DEFAULT_HASH_LENGTH,
++    type: Type = Type.I,
++) -> bytes:
+     """
+     Legacy alias for :func:`hash_secret` with default parameters.
+ 
+@@ -38,14 +40,14 @@ def hash_password(
+ 
+ 
+ def hash_password_raw(
+-    password,
+-    salt=None,
+-    time_cost=DEFAULT_TIME_COST,
+-    memory_cost=DEFAULT_MEMORY_COST,
+-    parallelism=DEFAULT_PARALLELISM,
+-    hash_len=DEFAULT_HASH_LENGTH,
+-    type=Type.I,
+-):
++    password: bytes,
++    salt: Optional[bytes] = None,
++    time_cost: int = DEFAULT_TIME_COST,
++    memory_cost: int = DEFAULT_MEMORY_COST,
++    parallelism: int = DEFAULT_PARALLELISM,
++    hash_len: int = DEFAULT_HASH_LENGTH,
++    type: Type = Type.I,
++) -> bytes:
+     """
+     Legacy alias for :func:`hash_secret_raw` with default parameters.
+ 
+@@ -59,7 +61,9 @@ def hash_password_raw(
+     )
+ 
+ 
+-def verify_password(hash, password, type=Type.I):
++def verify_password(
++    hash: bytes, password: bytes, type: Type = Type.I
++) -> Literal[True]:
+     """
+     Legacy alias for :func:`verify_secret` with default parameters.
+ 
+diff --git a/src/argon2/_password_hasher.py b/src/argon2/_password_hasher.py
+index 095453d..60bd5a1 100644
+--- a/src/argon2/_password_hasher.py
++++ b/src/argon2/_password_hasher.py
+@@ -1,5 +1,8 @@
++from __future__ import annotations
++
+ import os
+ 
++from ._typing import Literal
+ from ._utils import Parameters, _check_types, extract_parameters
+ from .exceptions import InvalidHash
+ from .low_level import Type, hash_secret, verify_secret
+@@ -12,7 +15,7 @@
+ DEFAULT_PARALLELISM = 8
+ 
+ 
+-def _ensure_bytes(s, encoding):
++def _ensure_bytes(s: bytes | str, encoding: str) -> bytes:
+     """
+     Ensure *s* is a bytes string.  Encode using *encoding* if it isn't.
+     """
+@@ -61,15 +64,18 @@ class PasswordHasher:
+     """
+     __slots__ = ["_parameters", "encoding"]
+ 
++    _parameters: Parameters
++    encoding: str
++
+     def __init__(
+         self,
+-        time_cost=DEFAULT_TIME_COST,
+-        memory_cost=DEFAULT_MEMORY_COST,
+-        parallelism=DEFAULT_PARALLELISM,
+-        hash_len=DEFAULT_HASH_LENGTH,
+-        salt_len=DEFAULT_RANDOM_SALT_LENGTH,
+-        encoding="utf-8",
+-        type=Type.ID,
++        time_cost: int = DEFAULT_TIME_COST,
++        memory_cost: int = DEFAULT_MEMORY_COST,
++        parallelism: int = DEFAULT_PARALLELISM,
++        hash_len: int = DEFAULT_HASH_LENGTH,
++        salt_len: int = DEFAULT_RANDOM_SALT_LENGTH,
++        encoding: str = "utf-8",
++        type: Type = Type.ID,
+     ):
+         e = _check_types(
+             time_cost=(time_cost, int),
+@@ -96,30 +102,30 @@ def from_parameters(cls, params: Parameters) -> "PasswordHasher":
+         self.encoding = encoding
+ 
+     @property
+-    def time_cost(self):
++    def time_cost(self) -> int:
+         return self._parameters.time_cost
+ 
+     @property
+-    def memory_cost(self):
++    def memory_cost(self) -> int:
+         return self._parameters.memory_cost
+ 
+     @property
+-    def parallelism(self):
++    def parallelism(self) -> int:
+         return self._parameters.parallelism
+ 
+     @property
+-    def hash_len(self):
++    def hash_len(self) -> int:
+         return self._parameters.hash_len
+ 
+     @property
+-    def salt_len(self):
++    def salt_len(self) -> int:
+         return self._parameters.salt_len
+ 
+     @property
+-    def type(self):
++    def type(self) -> Type:
+         return self._parameters.type
+ 
+-    def hash(self, password):
++    def hash(self, password: str | bytes) -> str:
+         """
+         Hash *password* and return an encoded hash.
+ 
+@@ -146,7 +152,7 @@ def hash(self, password):
+         b"$argon2id": Type.ID,
+     }
+ 
+-    def verify(self, hash, password):
++    def verify(self, hash: str | bytes, password: str | bytes) -> Literal[True]:
+         """
+         Verify that *password* matches *hash*.
+ 
+@@ -189,7 +195,7 @@ def verify(self, hash, password):
+             hash, _ensure_bytes(password, self.encoding), hash_type
+         )
+ 
+-    def check_needs_rehash(self, hash):
++    def check_needs_rehash(self, hash: str) -> bool:
+         """
+         Check whether *hash* was created using the instance's parameters.
+ 
+--- /dev/null
++++ b/src/argon2/_typing.py
+@@ -0,0 +1,13 @@
++# SPDX-License-Identifier: MIT
++
++import sys
++
++
++# try/except ImportError does NOT work.
++# c.f. https://github.com/python/mypy/issues/8520
++if sys.version_info >= (3, 8):
++    from typing import Literal
++else:
++    from typing_extensions import Literal
++
++__all__ = ["Literal"]
+diff --git a/src/argon2/_utils.py b/src/argon2/_utils.py
+index 325ff1a..b842fc3 100644
+--- a/src/argon2/_utils.py
++++ b/src/argon2/_utils.py
+@@ -1,3 +1,7 @@
++from __future__ import annotations
++
++from typing import Any
++
+ from .exceptions import InvalidHash
+ from .low_level import Type
+ 
+@@ -5,7 +9,7 @@
+ NoneType = type(None)
+ 
+ 
+-def _check_types(**kw):
++def _check_types(**kw: Any) -> str | None:
+     """
+     Check each ``name: (value, types)`` in *kw*.
+ 
+@@ -27,15 +31,10 @@ def _check_types(**kw):
+     if errors != []:
+         return ", ".join(errors) + "."
+ 
+-
+-def _encoded_str_len(l):
+-    """
+-    Compute how long a byte string of length *l* becomes if encoded to hex.
+-    """
+-    return (l << 2) / 3 + 2
++    return None
+ 
+ 
+-def _decoded_str_len(l):
++def _decoded_str_len(l: int) -> int:
+     """
+     Compute how long an encoded string of length *l* becomes.
+     """
+@@ -144,7 +143,7 @@ class Parameters:
+ _REQUIRED_KEYS = sorted(("v", "m", "t", "p"))
+ 
+ 
+-def extract_parameters(hash):
++def extract_parameters(hash: str) -> Parameters:
+     """
+     Extract parameters from an encoded *hash*.
+ 
+diff --git a/src/argon2/low_level.py b/src/argon2/low_level.py
+index a559c29..552f299 100644
+--- a/src/argon2/low_level.py
++++ b/src/argon2/low_level.py
+@@ -9,8 +9,10 @@
+ 
+ 
+ from enum import Enum
++from typing import Any
+ 
+ from ._ffi import ffi, lib
++from ._typing import Literal
+ from .exceptions import HashingError, VerificationError, VerifyMismatchError
+ 
+ 
+@@ -65,15 +67,15 @@ class Type(Enum):
+ 
+ 
+ def hash_secret(
+-    secret,
+-    salt,
+-    time_cost,
+-    memory_cost,
+-    parallelism,
+-    hash_len,
+-    type,
+-    version=ARGON2_VERSION,
+-):
++    secret: bytes,
++    salt: bytes,
++    time_cost: int,
++    memory_cost: int,
++    parallelism: int,
++    hash_len: int,
++    type: Type,
++    version: int = ARGON2_VERSION,
++) -> bytes:
+     """
+     Hash *secret* and return an **encoded** hash.
+ 
+@@ -131,15 +133,15 @@ def hash_secret(
+ 
+ 
+ def hash_secret_raw(
+-    secret,
+-    salt,
+-    time_cost,
+-    memory_cost,
+-    parallelism,
+-    hash_len,
+-    type,
+-    version=ARGON2_VERSION,
+-):
++    secret: bytes,
++    salt: bytes,
++    time_cost: int,
++    memory_cost: int,
++    parallelism: int,
++    hash_len: int,
++    type: Type,
++    version: int = ARGON2_VERSION,
++) -> bytes:
+     """
+     Hash *password* and return a **raw** hash.
+ 
+@@ -170,7 +172,7 @@ def hash_secret_raw(
+     return bytes(ffi.buffer(buf, hash_len))
+ 
+ 
+-def verify_secret(hash, secret, type):
++def verify_secret(hash: bytes, secret: bytes, type: Type) -> Literal[True]:
+     """
+     Verify whether *secret* is correct for *hash* of *type*.
+ 
+@@ -208,7 +210,7 @@ def verify_secret(hash, secret, type):
+         raise VerificationError(error_to_str(rv))
+ 
+ 
+-def core(context, type):
++def core(context: Any, type: int) -> int:
+     """
+     Direct binding to the ``argon2_ctx`` function.
+ 
+@@ -236,7 +238,7 @@ def core(context, type):
+     return lib.argon2_ctx(context, type)
+ 
+ 
+-def error_to_str(error):
++def error_to_str(error: int) -> str:
+     """
+     Convert an Argon2 error code into a native string.
+ 
+diff --git a/tests/test_legacy.py b/tests/test_legacy.py
+index 47430b6..04676af 100644
+--- a/tests/test_legacy.py
++++ b/tests/test_legacy.py
+@@ -10,7 +10,6 @@
+     hash_password_raw,
+     verify_password,
+ )
+-from argon2._utils import _encoded_str_len
+ from argon2.exceptions import HashingError, VerificationError
+ 
+ from .test_low_level import (
+@@ -89,9 +88,10 @@ def test_random_salt(self):
+         """
+         rv = hash_password(b"secret")
+         salt = rv.split(b",")[-1].split(b"$")[1]
++
+         assert (
+             # -1 for not NUL byte
+-            int(_encoded_str_len(DEFAULT_RANDOM_SALT_LENGTH)) - 1
++            int((DEFAULT_RANDOM_SALT_LENGTH << 2) / 3 + 2) - 1
+             == len(salt)
+         )
+ 
+diff --git a/tox.ini b/tox.ini
+index 4936e2f..b129b6b 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -16,13 +16,13 @@ python =
+     3.6: py36
+     3.7: py37, docs
+     3.8: py38, lint
+-    3.9: py39, manifest
++    3.9: py39, manifest, mypy
+     3.10: py310
+     pypy3: pypy3
+ 
+ 
+ [tox]
+-envlist = lint,py35,py36,py37,py38,py39,py310,pypy3,system-argon2,docs,manifest,pypi-description,coverage-report
++envlist = lint,mypy,py35,py36,py37,py38,py39,py310,pypy3,system-argon2,docs,manifest,pypi-description,coverage-report
+ isolated_build = true
+ 
+ 
+@@ -65,6 +65,14 @@
+     sphinx-build -W -b doctest -d {envtmpdir}/doctrees docs docs/_build/html
+ 
+ 
++[testenv:mypy]
++description = Check types
++basepython = python3.9
++extras = tests
++deps = mypy
++commands = mypy src typing_examples.py
++
++
+ [testenv:manifest]
+ description = Ensure MANIFEST.in is up to date.
+ deps = check-manifest
