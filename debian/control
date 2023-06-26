@@ -19,7 +19,7 @@ Rules-Requires-Root: no
 Homepage: https://argon2-cffi.readthedocs.io/
 Vcs-Git: https://salsa.debian.org/python-team/modules/python-argon2.git
 Vcs-Browser: https://salsa.debian.org/python-team/modules/python-argon2
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ bullseye
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
 
 Package: python3-argon2
 Architecture: any
