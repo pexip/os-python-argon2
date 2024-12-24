@@ -1,3 +1,10 @@
+python-argon2 (21.1.0-3) unstable; urgency=medium
+
+  * Team upload.
+  * Port to Sphinx 8.0 (closes: #1090133).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 24 Dec 2024 18:39:04 +0000
+
 python-argon2 (21.1.0-2) unstable; urgency=medium
 
   * Team Upload.

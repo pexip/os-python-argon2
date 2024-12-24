@@ -1,0 +1,22 @@
+From: Hynek Schlawack <hs@ox.cx>
+Date: Sat, 6 May 2023 17:08:04 -0600
+Subject: Fix intersphinx
+
+Origin: upstream, https://github.com/hynek/argon2-cffi/commit/fc71583c6cbc1859771a9368c62467a76818ef0e
+Bug-Debian: https://bugs.debian.org/1090133
+Last-Update: 2024-12-24
+---
+ docs/conf.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/docs/conf.py b/docs/conf.py
+index 47cc689..5f7ac20 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -304,5 +304,4 @@ texinfo_documents = [
+ # texinfo_no_detailmenu = False
+ 
+ 
+-# Example configuration for intersphinx: refer to the Python standard library.
+-intersphinx_mapping = {"https://docs.python.org/3": None}
++intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
