@@ -1,3 +1,4 @@
 0001-Use-generic-sphinx-theme-for-documentation.patch
 0002-do-not-build-external-clib.patch
+sphinx-8.0.patch
 pexip-add-types.patch
